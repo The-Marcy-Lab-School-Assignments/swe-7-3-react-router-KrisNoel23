@@ -4,10 +4,13 @@
 // - Do NOT use a <Link> component to accomplish this. Use the `useNavigate` hook instead.
 
 import BotClassIcon from './BotClassIcon';
+import { useNavigate } from 'react-router-dom'
 
 const BotCard = ({ robot }) => {
+  const navigate = useNavigate();
   const handleClick = () => {
     console.log(`take me to robot ${robot.id}`);
+    navigate(`/robots/${robot.id}`)
   }
 
   return (

@@ -21,8 +21,29 @@ import CouldNotLoadData from './CouldNotLoadData';
 import BotClassIcon from './BotClassIcon';
 import { getRobotById } from '../adapters/robotAdapters';
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 const BotSpecs = () => {
+  const [robot, setRobot] = useState();
+  const [error, setError] = useState();
+  const { id } = useParams();
+
+  useEffect(() => {
+    const doFetch = async () => {
+      const [data, error] = await getRobotById(id);
+      if(error) {
+        setError(error)
+      } else {
+        console.log(data);
+        setRobot(data);
+      }
+    };
+    doFetch();
+  }, [id]);
+
+  if(error) return <CouldNotLoadData />;
+  if(!robot) return <NotFoundPage />;
+
 
   return (
     <div className="ui segment">
@@ -30,16 +51,16 @@ const BotSpecs = () => {
         <div className="row">
           <div className="four wide column">
             <img
-              alt="Robot Name"
+              alt={robot.name}
               className="ui medium circular image bordered"
-              src="Robot Avatar"
+              src={robot.avatar_url}
             />
           </div>
           <div className="four wide column">
-            <h2>Name: Robot Name</h2>
+            <h2>Name: {robot.name}</h2>
             <p>
               <strong>Catchphrase: </strong>
-              Robot Catchphrase
+              {robot.catchphrase}
             </p>
             <strong>
               Class: Assault {BotClassIcon("Assault")}
@@ -50,15 +71,15 @@ const BotSpecs = () => {
                 <div className="row">
                   <div className="column">
                     <i className="icon large circular red heartbeat" />
-                    <strong>Robot Health</strong>
+                    <strong>{robot.health}</strong>
                   </div>
                   <div className="column">
                     <i className="icon large circular yellow lightning" />
-                    <strong>Robot Damage</strong>
+                    <strong>{robot.damage}</strong>
                   </div>
                   <div className="column">
                     <i className="icon large circular blue shield" />
-                    <strong>Robot Armor</strong>
+                    <strong>{robot.armor}</strong>
                   </div>
                 </div>
               </div>
